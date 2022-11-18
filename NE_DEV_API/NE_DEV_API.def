@@ -1,0 +1,11 @@
+; NE_DEV_API.def : Declares the module parameters for the DLL.
+
+LIBRARY      "NE_DEV_API2"
+;DESCRIPTION  'NE_DEV_API Windows Dynamic Link Library'
+
+EXPORTS
+    ; Explicit exports can go here
+
+
+;SECTIONS
+    ;IMAGE_TUNNEL  READ WRITE SHARED

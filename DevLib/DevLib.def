@@ -1,0 +1,7 @@
+; DevLib.def : Declares the module parameters for the DLL.
+
+LIBRARY      "DevLib2"
+DESCRIPTION  'DevLib Windows Dynamic Link Library'
+
+EXPORTS
+    ; Explicit exports can go here
