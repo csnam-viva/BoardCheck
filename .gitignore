@@ -106,3 +106,4 @@ system_r
 /DVRConfig/Release_Remote/DVRConfig.vcxproj.FileListAbsolute.txt
 /DVRConfig/Release_Remote/HD-Config_Remote.exe
 /DVRConfig/Release_Remote/HD-Config_Remote.exe.recipe
+!./release/uq3388.dll
