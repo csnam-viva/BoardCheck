@@ -329,6 +329,7 @@ BOOL CUXCapIF::ExtractSystemInfo()
 	}
 	
 	UINT8 nBoardCount = uq_get_board_count();
+
 	if (nBoardCount == 0)
 	{
 		////m_Log.Log(TRUE, "It has not board. - ExtractSystemInfo");
@@ -337,7 +338,10 @@ BOOL CUXCapIF::ExtractSystemInfo()
 	if (nBoardCount > MAX_MULTI_BOARD) {
 		nBoardCount = MAX_MULTI_BOARD;
 	}
-
+	//return TRUE;
+	//if (nBoardCount > 0) {  //csnam 2022.11.18
+	//	return TRUE;
+	//}
 	UINT32	venderID = 0;
 	UINT8	codeR[LICENSE_LENGTH]	 = {0,};
 	UINT8	code1204[LICENSE_LENGTH] = {'3','3','8','8',0x00,   0x00,0x00,0x00,0x00,0x00,  '1','2','0','4',0x00,  0x00,0x00,0x00,0x00,0x00,  0x00,0x00,0x00,0x00,  'S','T','D',0x00,0x00,  0x00,0x00,0x00,0x00,0x00,  0x00,0x00,0x00,0x00,0x00,  0x00};
@@ -354,6 +358,8 @@ BOOL CUXCapIF::ExtractSystemInfo()
 	m_nMaxAudio = 0;
 	m_nMaxSensor = 0;
 	m_nMaxRelay = 0;
+
+
 
 	for (i=0;i<nBoardCount;i++)
 	{

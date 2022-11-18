@@ -181,8 +181,7 @@
       <OutputFile>.\Debug/NE_DEV_API.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>copy Debug\*.lib ..\Library
-; copy Debug\*.dll ..\Release</Command>
+      <Command>copy Debug\*.dll ..\Debug</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='FireWatch_Debug|Win32'">

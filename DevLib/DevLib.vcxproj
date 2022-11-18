@@ -161,7 +161,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\Debug/DevLib.dll</OutputFile>
+      <OutputFile>.\Debug/DevLib2.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>.\DevLib.def</ModuleDefinitionFile>
@@ -179,9 +179,7 @@
       <OutputFile>.\Debug/DevLib.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>copy Debug\*.lib ..\Library
-copy Debug\*.dll ..\System
-</Command>
+      <Command>copy Debug\*.dll ..\Debug</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='FireWatch_Debug|Win32'">

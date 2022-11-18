@@ -90,16 +90,12 @@ int CDevApiClass::GetVSType()
 	// get board type
 	if (m_pDevice) {
 		m_pDevice->GetQueryInterface(0);
-		if (m_pDevice->ExtractSystemInfo())
-		{
-			int vs_type = m_pDevice->GetVSType(0);
-			//m_pDevice->ResetQueryInterface(0);
-			return vs_type;
-		}
-		else
-		{
-			//m_pDevice->ResetQueryInterface(0);
-		}
+		m_pDevice->ExtractSystemInfo();
+		
+		int vs_type = m_pDevice->GetVSType(0);
+		//m_pDevice->ResetQueryInterface(0);
+		return vs_type;
+		
 	}
 
 	return 0;

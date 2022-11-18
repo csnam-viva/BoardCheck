@@ -164,7 +164,7 @@ void CBoardTestDlg::OnBnClickedButton1()
 	m_pDev = new CDevApiClass();
 	if (m_pDev->CreateDevice(VS_UBIQ_3388)) {
 
-		AfxMessageBox("board open");
+		
 		int nType = m_pDev->GetVSType();
 		if (nType > 0) {
 			
