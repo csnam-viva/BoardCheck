@@ -87,14 +87,14 @@ void CDevApiClass::DestroyDevice()
 // 보드가 없으면 항상 0을 리턴한다.
 int CDevApiClass::GetVSType()
 {
-	// get board type
+	BOOL bCheck;
 	if (m_pDevice) {
 		m_pDevice->GetQueryInterface(0);
-		m_pDevice->ExtractSystemInfo();
+		bCheck = m_pDevice->ExtractSystemInfo();
 		
-		int vs_type = m_pDevice->GetVSType(0);
+		//int vs_type = m_pDevice->GetVSType(0);
 		//m_pDevice->ResetQueryInterface(0);
-		return vs_type;
+		return bCheck;
 		
 	}
 

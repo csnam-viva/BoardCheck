@@ -27,12 +27,6 @@
     <ClCompile Include="UXCapIF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="uq3388_osd_lib.cpp">
-      <Filter>Uq3388</Filter>
-    </ClCompile>
-    <ClCompile Include="uq3388_motion_lib.cpp">
-      <Filter>Uq3388</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UXCap.rc">
@@ -56,12 +50,6 @@
       <Filter>Uq3388</Filter>
     </ClInclude>
     <ClInclude Include="..\include\ubiqmicro\uq3388\uq3388_lib_define.h">
-      <Filter>Uq3388</Filter>
-    </ClInclude>
-    <ClInclude Include="uq3388_osd_lib.h">
-      <Filter>Uq3388</Filter>
-    </ClInclude>
-    <ClInclude Include="uq3388_motion_lib.h">
       <Filter>Uq3388</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\UXCapIF.h">

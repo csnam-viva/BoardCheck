@@ -30,7 +30,7 @@ static char THIS_FILE[] = __FILE__;
 //#pragma comment (lib, "../Library/RDVRLog.lib")
 //#pragma message ("linking 'RDVRLog.lib'")
 
-#include "uq3388_osd_lib.h"
+//#include "uq3388_osd_lib.h"
 #include "uq3388_motion_lib.h"
 // move to stdafx.h
 // #pragma comment(lib, "../Library/Ubiqmicro/uq3388/uq3388.lib")
@@ -216,8 +216,8 @@ CUXCapIF::CUXCapIF()
 //	m_hCloseEvent = NULL;
 //	m_hTimeCheckThread = NULL;
 
-	m_uq_osd = new uq3388_osd_lib;
-	m_uq_motion = new uq3388_motion_lib;
+	//m_uq_osd = new uq3388_osd_lib;
+	//m_uq_motion = new uq3388_motion_lib;
 }
 
 CUXCapIF::~CUXCapIF()
@@ -225,18 +225,21 @@ CUXCapIF::~CUXCapIF()
 	DeleteCriticalSection(&m_criticalSectionTVout);
 
 	if (uq_get_device_state() == UQ_STATE_RUN) {
+		uq_stop();
 		////m_Log.Log(TRUE, "ux::stop = %d", uq_stop());
 	}
 	if (uq_get_device_state() == UQ_STATE_SETUP) {
+		uq_unsetup();
 		////m_Log.Log(TRUE, "ux::unsetup = %d", uq_unsetup());
 	}
 	if (uq_get_device_state() == UQ_STATE_INIT) {
+		uq_uninit();
 		////m_Log.Log(TRUE, "ux::uninit = %d", uq_uninit());
 	}
 	uq_destroy_instance();
 
-	if (m_uq_osd) delete m_uq_osd;
-	if (m_uq_motion) delete m_uq_motion;
+	//if (m_uq_osd) delete m_uq_osd;
+	//if (m_uq_motion) delete m_uq_motion;
 }
 
 void CUXCapIF::GetSystemDTS(__int64* dts)
@@ -272,12 +275,15 @@ void* CUXCapIF::CreateDevice(int type)
 void CUXCapIF::DestroyDevice()
 {
 	if (uq_get_device_state() == UQ_STATE_RUN) {
+		uq_stop();
 		////m_Log.Log(TRUE, "ux::stop = %d", uq_stop());
 	}
 	if (uq_get_device_state() == UQ_STATE_SETUP) {
+		uq_unsetup();
 		////m_Log.Log(TRUE, "ux::unsetup = %d", uq_unsetup());
 	}
 	if (uq_get_device_state() == UQ_STATE_INIT) {
+		uq_uninit();
 		////m_Log.Log(TRUE, "ux::uninit = %d", uq_uninit());
 	}
 	uq_destroy_instance();
@@ -287,6 +293,7 @@ void CUXCapIF::DestroyDevice()
 
 void CUXCapIF::GetQueryInterface(int idx)
 {
+	uq_init();
 	////m_Log.Log(TRUE, "ux::init() = %d", uq_init()); 
 
 	m_dwStatus = API_ST_LOADED;
@@ -296,6 +303,7 @@ void CUXCapIF::ResetQueryInterface(int idx)
 {
 	if (m_dwStatus == API_ST_LOADED)
 	{
+		uq_uninit();
 		////m_Log.Log(TRUE, "ux::uninit() = %d", uq_uninit());
 
 		m_dwStatus = API_ST_NOTHING;
@@ -338,11 +346,15 @@ BOOL CUXCapIF::ExtractSystemInfo()
 	if (nBoardCount > MAX_MULTI_BOARD) {
 		nBoardCount = MAX_MULTI_BOARD;
 	}
-	//return TRUE;
+	UINT32	venderID = 0;
+	
+
+	uq_get_vender_id(0, venderID);
+
 	//if (nBoardCount > 0) {  //csnam 2022.11.18
 	//	return TRUE;
 	//}
-	UINT32	venderID = 0;
+
 	UINT8	codeR[LICENSE_LENGTH]	 = {0,};
 	UINT8	code1204[LICENSE_LENGTH] = {'3','3','8','8',0x00,   0x00,0x00,0x00,0x00,0x00,  '1','2','0','4',0x00,  0x00,0x00,0x00,0x00,0x00,  0x00,0x00,0x00,0x00,  'S','T','D',0x00,0x00,  0x00,0x00,0x00,0x00,0x00,  0x00,0x00,0x00,0x00,0x00,  0x00};
 	UINT8	code2408[LICENSE_LENGTH] = {'3','3','8','8',0x00,   0x00,0x00,0x00,0x00,0x00,  '2','4','0','8',0x00,  0x00,0x00,0x00,0x00,0x00,  0x00,0x00,0x00,0x00,  'S','T','D',0x00,0x00,  0x00,0x00,0x00,0x00,0x00,  0x00,0x00,0x00,0x00,0x00,  0x00};
@@ -359,7 +371,7 @@ BOOL CUXCapIF::ExtractSystemInfo()
 	m_nMaxSensor = 0;
 	m_nMaxRelay = 0;
 
-
+	
 
 	for (i=0;i<nBoardCount;i++)
 	{
@@ -563,7 +575,7 @@ void CUXCapIF::CleanUp(int idx)
 {
 	CleanUp_Video();
 	CleanUp_Audio();
-
+	uq_unsetup();
 	//m_Log.Log(TRUE, "ux::unsetup() = %d", uq_unsetup());
 
 	m_dwStatus = API_ST_LOADED;
@@ -635,7 +647,7 @@ BOOL CUXCapIF::Run_Video()
 
 	for (i=0;i<m_nMaxVideo;i++)
 	{
-//		memset(&s, 0x00, sizeof(s));
+		memset(&s, 0x00, sizeof(s));
 
 //		uq_get_video_input_state(i, s);
 
@@ -776,8 +788,8 @@ void CUXCapIF::Stop_Video()
 
 	for (i=0;i<m_nMaxVideo;i++)
 	{
-		m_uq_osd->set_osd_box_enable(i, 0x00);
-		m_uq_motion->set_channel_enable(i, 0x00);
+		////m_uq_osd->set_osd_box_enable(i, 0x00);
+		//m_uq_motion->set_channel_enable(i, 0x00);
 
 		uq_set_video_enable(i, UQ_VIDEO_MAIN_PREVIEW, 0x00);
 //		uq_set_video_enable(i, UQ_VIDEO_SUB_PREVIEW, 0x00);
@@ -1248,43 +1260,43 @@ void CUXCapIF::SetVideoPort( UQ_VIDEO_INPUT_STATE& data )
 		}
 
 
-		switch (m_osd_pos[ch_id]) {
-		case 3 :	SetRect(&rect, w-(margin+(lengthTime*(font_h*2/3))+(lengthDesc*font_h)),  margin, w-margin, margin + font_h);
-					align_w = UQ_OSD_ALIGN_RIGHT;
-//					align_h = UQ_OSD_ALIGN_TOP;
-					break;
-		case 4 :	SetRect(&rect, margin,  h-margin-font_h, margin+(lengthTime*(font_h*2/3))+(lengthDesc*font_h), h-margin);
-					align_w = UQ_OSD_ALIGN_LEFT;
-//					align_h = UQ_OSD_ALIGN_BOTTOM;
-					break;
-		case 6 :	SetRect(&rect, w-(margin+(lengthTime*(font_h))+(lengthDesc*font_h)),  h-margin-font_h, w-margin, h-margin);
-					align_w = UQ_OSD_ALIGN_RIGHT;
-//					align_h = UQ_OSD_ALIGN_BOTTOM;
-					break;
-		case 1 :
-		default :	SetRect(&rect, margin, margin, margin+(lengthTime*(font_h*2/3))+(lengthDesc*font_h), margin+font_h);
-					align_w = UQ_OSD_ALIGN_LEFT;
-//					align_h = UQ_OSD_ALIGN_TOP;
-					break;
-		}
+//		switch (m_osd_pos[ch_id]) {
+//		case 3 :	SetRect(&rect, w-(margin+(lengthTime*(font_h*2/3))+(lengthDesc*font_h)),  margin, w-margin, margin + font_h);
+//					align_w = UQ_OSD_ALIGN_RIGHT;
+////					align_h = UQ_OSD_ALIGN_TOP;
+//					break;
+//		case 4 :	SetRect(&rect, margin,  h-margin-font_h, margin+(lengthTime*(font_h*2/3))+(lengthDesc*font_h), h-margin);
+//					align_w = UQ_OSD_ALIGN_LEFT;
+////					align_h = UQ_OSD_ALIGN_BOTTOM;
+//					break;
+//		case 6 :	SetRect(&rect, w-(margin+(lengthTime*(font_h))+(lengthDesc*font_h)),  h-margin-font_h, w-margin, h-margin);
+//					align_w = UQ_OSD_ALIGN_RIGHT;
+////					align_h = UQ_OSD_ALIGN_BOTTOM;
+//					break;
+//		case 1 :
+//		default :	SetRect(&rect, margin, margin, margin+(lengthTime*(font_h*2/3))+(lengthDesc*font_h), margin+font_h);
+//					align_w = UQ_OSD_ALIGN_LEFT;
+////					align_h = UQ_OSD_ALIGN_TOP;
+//					break;
+//		}
 
 
-//		m_uq_osd->set_osd_font_size(font_h);
+//		//m_uq_osd->set_osd_font_size(font_h);
 
 		////m_Log.Log(TRUE, "set_osd_box(%d, (%d, %d, %d, %d), aln=%d, l=%d)",	ch_id, rect.left, rect.top, rect.right-rect.left, rect.bottom, align_w, lengthDesc);
 
-		m_uq_osd->set_osd_box(ch_id, rect.left, rect.top, rect.right-rect.left, rect.bottom);
-		m_uq_osd->set_osd_string_color(ch_id, m_osd_color);
-		m_uq_osd->set_osd_box_enable(ch_id, 0x01);
+		//m_uq_osd->set_osd_box(ch_id, rect.left, rect.top, rect.right-rect.left, rect.bottom);
+		//m_uq_osd->set_osd_string_color(ch_id, m_osd_color);
+		//m_uq_osd->set_osd_box_enable(ch_id, 0x01);
 		if (m_osd_time_type[ch_id] == 0)
 		{
-			m_uq_osd->set_osd_string(ch_id, osd_str, align_w, font_h);
+			//m_uq_osd->set_osd_string(ch_id, osd_str, align_w, font_h);
 		}
 		////m_Log.Log(TRUE, "set_osd_box_enable(%d, 0x01) = 1",	ch_id);
 	}
 	else
 	{
-		m_uq_osd->set_osd_box_enable(ch_id, 0x00);
+		//m_uq_osd->set_osd_box_enable(ch_id, 0x00);
 		////m_Log.Log(TRUE, "set_osd_box_enable(%d, 0x00) = 1",	ch_id);
 	}
 }
@@ -1524,24 +1536,24 @@ void CUXCapIF::SetOSDTime()
 				}
 
 
-				switch (m_osd_pos[i]) {
-				case 3 :	align_w = UQ_OSD_ALIGN_RIGHT;
-//							align_h = UQ_OSD_ALIGN_TOP;
-							break;
-				case 4 :	align_w = UQ_OSD_ALIGN_LEFT;
-//							align_h = UQ_OSD_ALIGN_BOTTOM;
-							break;
-				case 6 :	align_w = UQ_OSD_ALIGN_RIGHT;
-//							align_h = UQ_OSD_ALIGN_BOTTOM;
-							break;
-				case 1 :
-				default :	align_w = UQ_OSD_ALIGN_LEFT;
-//							align_h = UQ_OSD_ALIGN_TOP;
-							break;
-				}
+//				switch (m_osd_pos[i]) {
+//				case 3 :	align_w = UQ_OSD_ALIGN_RIGHT;
+////							align_h = UQ_OSD_ALIGN_TOP;
+//							break;
+//				case 4 :	align_w = UQ_OSD_ALIGN_LEFT;
+////							align_h = UQ_OSD_ALIGN_BOTTOM;
+//							break;
+//				case 6 :	align_w = UQ_OSD_ALIGN_RIGHT;
+////							align_h = UQ_OSD_ALIGN_BOTTOM;
+//							break;
+//				case 1 :
+//				default :	align_w = UQ_OSD_ALIGN_LEFT;
+////							align_h = UQ_OSD_ALIGN_TOP;
+//							break;
+//				}
 
 
-				m_uq_osd->set_osd_string(i, osd_str, align_w, font_h);
+				//m_uq_osd->set_osd_string(i, osd_str, align_w, font_h);
 			}
 		}
 	}
@@ -1936,18 +1948,18 @@ BOOL CUXCapIF::EnableMotion(int cam_id, BOOL bEnable)
 				UINT8	temporal_window		= 8;					//(8 x 33msec)
 				UINT8	temporal_th			= 2;					//
 
-				m_uq_motion->set_channel(ch_id, width, height);
+				//m_uq_motion->set_channel(ch_id, width, height);
 
-				for (UINT8 i = 0; i < max_rect; ++i)
-				{
-					m_uq_motion->set_region(ch_id, i, rect[i], spatial_th, temporal_th, temporal_window);
-					TRACE("set_region(ch=%d, rect(%d,%d,%d,%d)) \n", ch_id, rect[i].left, rect[i].top, rect[i].right, rect[i].bottom);
-					////m_Log.Log(TRUE, "set_region(ch=%d, rect(%d,%d,%d,%d))", ch_id, rect[i].left, rect[i].top, rect[i].right, rect[i].bottom);
+				//for (UINT8 i = 0; i < max_rect; ++i)
+				//{
+				//	m_uq_motion->set_region(ch_id, i, rect[i], spatial_th, temporal_th, temporal_window);
+				//	TRACE("set_region(ch=%d, rect(%d,%d,%d,%d)) \n", ch_id, rect[i].left, rect[i].top, rect[i].right, rect[i].bottom);
+				//	////m_Log.Log(TRUE, "set_region(ch=%d, rect(%d,%d,%d,%d))", ch_id, rect[i].left, rect[i].top, rect[i].right, rect[i].bottom);
 
-					m_uq_motion->set_region_enable(ch_id, i, 0x01);
-				}
+				//	m_uq_motion->set_region_enable(ch_id, i, 0x01);
+				//}
 
-				m_uq_motion->set_channel_enable(ch_id, 0x01);
+				//m_uq_motion->set_channel_enable(ch_id, 0x01);
 			}
 		}
 	}
@@ -2053,33 +2065,33 @@ BOOL CUXCapIF::set_motion_region(UINT8 ch_id, UINT8 region_id, RECT rect, UINT8 
 void CUXCapIF::check_motion_data(UQ_MOTION_STREAM_DATA& data)
 {
 #if 1
-	if (m_uq_motion->check_motion(data) == TRUE)
-	{
-//		TRACE("motion detect : ch-%d \n", data.ch_id);
-
-		DWORD tmCurrMotionChecked = GetTickCount();
-		if (tmCurrMotionChecked - m_tmLastMotionChecked[data.ch_id] > 200)
-		{
-			m_tmLastMotionChecked[data.ch_id] = tmCurrMotionChecked;
-
-//			TRACE("motion detect : ch-%d \n", data.ch_id);
-
-			DATA_INFO	data_info;
-
-			// motion data
-			ZeroMemory(&data_info, sizeof(data_info));
-			data_info.vs_idx		= 0;
-			data_info.bd_idx		= 0;
-			data_info.cam_idx		= data.ch_id;
-			data_info.type			= ACT_CODIMAGE;
-			data_info.data_size		= 1;
-			data_info.pdata			= NULL;
-			data_info.frame_type	= FT_MD_FULL;
-			GetChannelResolution(data_info.cam_idx, 0, &data_info.res.w, &data_info.res.h);
-
-			m_pAddr_Encoded_callback(&data_info);
-		}
-	}
+//	if (m_uq_motion->check_motion(data) == TRUE)
+//	{
+////		TRACE("motion detect : ch-%d \n", data.ch_id);
+//
+//		DWORD tmCurrMotionChecked = GetTickCount();
+//		if (tmCurrMotionChecked - m_tmLastMotionChecked[data.ch_id] > 200)
+//		{
+//			m_tmLastMotionChecked[data.ch_id] = tmCurrMotionChecked;
+//
+////			TRACE("motion detect : ch-%d \n", data.ch_id);
+//
+//			DATA_INFO	data_info;
+//
+//			// motion data
+//			ZeroMemory(&data_info, sizeof(data_info));
+//			data_info.vs_idx		= 0;
+//			data_info.bd_idx		= 0;
+//			data_info.cam_idx		= data.ch_id;
+//			data_info.type			= ACT_CODIMAGE;
+//			data_info.data_size		= 1;
+//			data_info.pdata			= NULL;
+//			data_info.frame_type	= FT_MD_FULL;
+//			GetChannelResolution(data_info.cam_idx, 0, &data_info.res.w, &data_info.res.h);
+//
+//			m_pAddr_Encoded_callback(&data_info);
+//		}
+//	}
 #else
 	UINT16	width, height;
 	BOOL	b_data_rdy;
@@ -2462,7 +2474,7 @@ void CUXCapIF::SetOSDColor(int idx, COLORREF osd_color)
 
 	m_osd_color = osd_color;
 
-	m_uq_osd->set_osd_font("Language\\NVR.ttf");
+	//m_uq_osd->set_osd_font("Language\\NVR.ttf");
 }
 
 void CUXCapIF::SetOSDInfo(int idx, int bd_id, int cam_id, BOOL bShow, BOOL btime, int time_type, BOOL bosd, LPSTR osd, int pos, int translucent)

@@ -19,14 +19,14 @@
 #include "Ubiqmicro/uq3388/uq3388_lib_define.h"
 #include "Ubiqmicro/uq3388/uq3388_lib.h"
 
-#include "Ubiqmicro/FreeType/ft2build.h"
+//#include "Ubiqmicro/FreeType/ft2build.h"
 //#pragma comment(lib,"../library/Ubiqmicro/FreeType/vs2010_x86/freetype.lib")
 
 
 #include "DevLibIF.h"
 
-class uq3388_osd_lib;
-class uq3388_motion_lib;
+//class uq3388_osd_lib;
+//class uq3388_motion_lib;
 
 
 #define	MAX_DIO_BOARD	2
@@ -204,7 +204,7 @@ protected:
 	BOOL					m_bAudioEnable[MAX_CAMERA_PER_BOARD];
 
 //							osd
-	uq3388_osd_lib			*m_uq_osd;
+	//uq3388_osd_lib			*m_uq_osd;
 	COLORREF				m_osd_color;
 	BOOL					m_osd_show[MAX_CAMERA_PER_BOARD];
 	UINT8					m_osd_pos[MAX_CAMERA_PER_BOARD];
@@ -214,7 +214,7 @@ protected:
 	void					SetOSDTime();
 
 //							motion
-	uq3388_motion_lib		*m_uq_motion;
+	//uq3388_motion_lib		*m_uq_motion;
 	BOOL					m_motionstart[MAX_CAMERA_PER_BOARD];
 	MOTIONINFO				m_motioninfo[MAX_CAMERA_PER_BOARD];
 	DWORD					m_tmLastMotionChecked[MAX_CAMERA_PER_BOARD];

@@ -160,8 +160,6 @@ copy Debug\*.dll ..\Debug\</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="uq3388_motion_lib.cpp" />
-    <ClCompile Include="uq3388_osd_lib.cpp" />
     <ClCompile Include="UXCap.cpp" />
     <ClCompile Include="UXCapIF.cpp" />
   </ItemGroup>
@@ -183,8 +181,6 @@ copy Debug\*.dll ..\Debug\</Command>
     <ClInclude Include="Serial.h" />
     <ClInclude Include="SerialDef.h" />
     <ClInclude Include="StdAfx.h" />
-    <ClInclude Include="uq3388_motion_lib.h" />
-    <ClInclude Include="uq3388_osd_lib.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
